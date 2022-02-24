@@ -1,5 +1,7 @@
 sfxr
 *.o
+*.sfxr
+*.wav
 .deps/
 Makefile
 Makefile.in
