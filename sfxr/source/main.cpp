@@ -29,6 +29,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <cmath>
+#include <iostream>
 #include <string>
 
 #include "SDL.h"
@@ -140,6 +141,9 @@ int fileacc=0;
 float* lastChanged = NULL;  // For undo
 float undoValue = 0.0f;
 
+// this is the last-used settings filename, i.e., something.sfxr; used for quicksave to avoid
+std::string quicksave_filename;
+
 void SetUndo(float* valueptr, float oldValue)
 {
 	lastChanged = valueptr;
@@ -249,10 +253,11 @@ bool LoadSettings(char* filename)
 	}
 
 	fclose(file);
+	quicksave_filename = filename;
 	return true;
 }
 
-bool SaveSettings(char* filename)
+bool SaveSettings(const char* filename)
 {
 	FILE* file=fopen(filename, "wb");
 	if(!file)
@@ -297,7 +302,17 @@ bool SaveSettings(char* filename)
 	fwrite(&p_arp_mod, 1, sizeof(float), file);
 
 	fclose(file);
+	quicksave_filename = filename;
 	return true;
+}
+
+bool QuickSaveSettings()
+{
+	if(quicksave_filename == "") return false;
+
+	std::cout << "quick save: " << quicksave_filename << std::endl;
+
+	return SaveSettings(quicksave_filename.c_str());
 }
 
 void ResetSample(bool restart)
@@ -615,6 +630,29 @@ bool ExportWAV(const char* filename)
 	fclose(foutput);
 
 	return true;
+}
+
+std::string GetQuickExportWAVFilename()
+{
+    std::string Basename;
+    int CharPos = quicksave_filename.rfind ('.') + 1;
+    Basename.append(quicksave_filename, 0, CharPos - 1);
+
+    // if there is no suffix '.' in the quicksave filename, then just use the whole filename
+	if(Basename == "") Basename = quicksave_filename;
+
+	return Basename + ".wav";
+}
+
+bool QuickExportWAV()
+{
+	// replace the extension with .wav
+	std::string filename = GetQuickExportWAVFilename();
+	if(filename == "") return false;
+
+    std::cout << "quick export: " << filename << std::endl;
+
+    return ExportWAV(filename.c_str());
 }
 
 #include "tools.h"
@@ -1062,15 +1100,20 @@ void DrawScreen()
 	}
 
 	DrawText(font, 515, 170, 0x000000, "VOLUME");
+
+	// line connecting volume to "EXPORT .WAV"
 	DrawBar(490-1-1+60, 180-1+5, 70, 2, 0x000000);
-	DrawBar(490-1-1+60+68, 180-1+5, 2, 205, 0x000000);
-	DrawBar(490-1-1+60, 180-1, 42+2, 10+2, 0xFF0000);
+	DrawBar(490-1-1+60+68, 180-1+5, 2, 175, 0x000000);
+	DrawBar(490-1-1+60, 350-1+9, 70, 2, 0x000000);
+
+	DrawBar(490-1-1+60, 180-1, 42+2, 10+2, 0xFF0000); // red border around top part of volume slider
+
 	if(Slider(490, 180, sound_vol, false, " "))
 		PlaySample();
 	if(Button(490, 200, false, "PLAY SOUND", 20))
 		PlaySample();
 
-	if(Button(490, 290, false, "LOAD SOUND", 14))
+	if(Button(490, 260, false, "LOAD SOUND", 14))
 	{
 		char filename[256];
 		if(FileSelectorLoad(filename, 1))
@@ -1080,23 +1123,40 @@ void DrawScreen()
 			PlaySample();
 		}
 	}
-	if(Button(490, 320, false, "SAVE SOUND", 15))
+	if(Button(490, 290, false, "SAVE SOUND", 15))
 	{
 		char filename[256];
 		if(FileSelectorSave(filename, 1))
 			SaveSettings(filename);
 	}
 
-	DrawBar(490-1-1+60, 380-1+9, 70, 2, 0x000000);
-	DrawBar(490-1-2, 380-1-2, 102+4, 19+4, 0x000000);
-	if(Button(490, 380, false, "EXPORT .WAV", 16))
+	if(quicksave_filename != "")
+	{
+		DrawBar(490 + 100/2, 290 + 17, 2, 30, 0x000000); // line connecting save button to the quicksave filename
+		if(Button(490, 320, false, stoupper(quicksave_filename).c_str(), 99))
+		{
+			QuickSaveSettings();
+		}
+	}
+
+	DrawBar(490-1-2, 350-1-2, 102+4, 19+4, 0x000000); // dark border around "EXPORT .WAV"
+	if(Button(490, 350, false, "EXPORT .WAV", 16))
 	{
 		std::string filename = new_file(".wav");
-		//char filename[256];
-		//if(FileSelectorSave(filename, 0))
 		if(filename.size() > 0)
 			ExportWAV(filename.c_str());
 	}
+
+	if(quicksave_filename != "")
+	{
+		DrawBar(490 + 100/2, 350 + 17, 2, 30, 0x000000); // line connecting export wav button to the quick export wav button
+		if(Button(490, 380, false, stoupper(GetQuickExportWAVFilename()).c_str(), 17))
+		{
+			QuickExportWAV();
+		}
+	}
+
+
 	char str[10];
 	sprintf(str, "%i HZ", wav_freq);
 	if(Button(490, 410, false, str, 18))
