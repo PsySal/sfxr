@@ -1013,17 +1013,6 @@ void DrawScreen()
 		wave_type=3;
 		do_play=true;
 	}
-	if(dragOnLeftClick)
-	{
-		if(ButtonWH(490, 140, 17, 17, dragOnLeftClick, "X", 101))
-			dragOnLeftClick = !dragOnLeftClick;
-	}
-	else
-	{
-		if(ButtonWH(490, 140, 17, 17, dragOnLeftClick, "", 101))
-			dragOnLeftClick = !dragOnLeftClick;
-	}
-	DrawText(font, 515, 145, 0x000000, "DRAG BARS");
 
 	DrawBar(5-1-1, 412-1-1, 102+2, 19+2, 0x000000);
 	if(Button(5, 412, false, "RANDOMIZE", 40))
@@ -1098,6 +1087,18 @@ void DrawScreen()
 		if(rnd(1)) p_arp_mod+=frnd(0.1f)-0.05f;
 		do_play=true;
 	}
+
+	if(dragOnLeftClick)
+	{
+		if(ButtonWH(490, 70, 17, 17, dragOnLeftClick, "X", 101))
+			dragOnLeftClick = !dragOnLeftClick;
+	}
+	else
+	{
+		if(ButtonWH(490, 70, 17, 17, dragOnLeftClick, "", 101))
+			dragOnLeftClick = !dragOnLeftClick;
+	}
+	DrawText(font, 515, 75, 0x000000, "DRAG BARS");
 
 	DrawText(font, 515, 170, 0x000000, "VOLUME");
 
