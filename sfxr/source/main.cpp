@@ -1156,7 +1156,6 @@ void DrawScreen()
 		}
 	}
 
-
 	char str[10];
 	sprintf(str, "%i HZ", wav_freq);
 	if(Button(490, 410, false, str, 18))
