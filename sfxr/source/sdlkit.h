@@ -72,7 +72,7 @@ void ddkUnlock ();
 
 void ddkSetMode (int width, int height, int bpp, int refreshrate, int fullscreen, const char *title);
 
-
+std::string stoupper(const std::string& s);
 //void selected_file (GtkWidget *button, GtkFileSelection *fs);
 
 bool select_file (char *buf, bool showNewButton);
