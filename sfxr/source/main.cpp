@@ -1056,6 +1056,18 @@ void DrawScreen()
 		do_play=true;
 	}
 
+	if(dragOnLeftClick)
+	{
+		if(ButtonWH(5, 322, 17, 17, dragOnLeftClick, "X", 101))
+			dragOnLeftClick = !dragOnLeftClick;
+	}
+	else
+	{
+		if(ButtonWH(5, 322, 17, 17, dragOnLeftClick, "", 101))
+			dragOnLeftClick = !dragOnLeftClick;
+	}
+	DrawText(font, 30, 327, 0x000000, "DRAG (G)");
+
 	if(ButtonWH(5, 352, 75, 17, false, "UNDO (Z)", 102))
 	{
 		Undo();
@@ -1088,33 +1100,21 @@ void DrawScreen()
 		do_play=true;
 	}
 
-	if(dragOnLeftClick)
-	{
-		if(ButtonWH(490, 70, 17, 17, dragOnLeftClick, "X", 101))
-			dragOnLeftClick = !dragOnLeftClick;
-	}
-	else
-	{
-		if(ButtonWH(490, 70, 17, 17, dragOnLeftClick, "", 101))
-			dragOnLeftClick = !dragOnLeftClick;
-	}
-	DrawText(font, 515, 75, 0x000000, "DRAG BARS");
-
-	DrawText(font, 515, 170, 0x000000, "VOLUME");
-
 	// line connecting volume to "EXPORT .WAV"
-	DrawBar(490-1-1+60, 180-1+5, 70, 2, 0x000000);
-	DrawBar(490-1-1+60+68, 180-1+5, 2, 175, 0x000000);
-	DrawBar(490-1-1+60, 350-1+9, 70, 2, 0x000000);
+	DrawBar(490-1-1+60,    72-1+5, 70, 2, 0x000000);
+	DrawBar(490-1-1+60+68, 72-1+5, 2, 300-70+2, 0x000000);
+	DrawBar(490-1-1+60,    300-1+9, 70, 2, 0x000000);
 
-	DrawBar(490-1-1+60, 180-1, 42+2, 10+2, 0xFF0000); // red border around top part of volume slider
-
-	if(Slider(490, 180, sound_vol, false, " "))
-		PlaySample();
-	if(Button(490, 200, false, "PLAY SOUND", 20))
+	DrawBar(490-1-1+60,    72-1,   42+2, 10+2, 0xFF0000); // red border around top part of volume slider
+	if(Slider(490, 72, sound_vol, false, " "))
 		PlaySample();
 
-	if(Button(490, 260, false, "LOAD SOUND", 14))
+	DrawText(font, 515, 90, 0x000000, "VOLUME");
+
+	if(Button(490, 120, false, "PLAY SOUND", 20))
+		PlaySample();
+
+	if(Button(490, 180, false, "LOAD SOUND", 14))
 	{
 		char filename[256];
 		if(FileSelectorLoad(filename, 1))
@@ -1124,7 +1124,7 @@ void DrawScreen()
 			PlaySample();
 		}
 	}
-	if(Button(490, 290, false, "SAVE SOUND", 15))
+	if(Button(490, 210, false, "SAVE SOUND", 15))
 	{
 		char filename[256];
 		if(FileSelectorSave(filename, 1))
@@ -1133,15 +1133,15 @@ void DrawScreen()
 
 	if(quicksave_filename != "")
 	{
-		DrawBar(490 + 100/2, 290 + 17, 2, 30, 0x000000); // line connecting save button to the quicksave filename
-		if(Button(490, 320, false, stoupper(quicksave_filename).c_str(), 99))
+		DrawBar(490 + 100/2, 210 + 17, 2, 30, 0x000000); // line connecting save button to the quicksave filename
+		if(Button(490, 240, false, stoupper(quicksave_filename).c_str(), 99))
 		{
 			QuickSaveSettings();
 		}
 	}
 
-	DrawBar(490-1-2, 350-1-2, 102+4, 19+4, 0x000000); // dark border around "EXPORT .WAV"
-	if(Button(490, 350, false, "EXPORT .WAV", 16))
+	DrawBar(490-1-2, 300-1-2, 102+4, 19+4, 0x000000); // dark border around "EXPORT .WAV"
+	if(Button(490, 300, false, "EXPORT .WAV", 16))
 	{
 		std::string filename = new_file(".wav");
 		if(filename.size() > 0)
@@ -1150,8 +1150,8 @@ void DrawScreen()
 
 	if(quicksave_filename != "")
 	{
-		DrawBar(490 + 100/2, 350 + 17, 2, 30, 0x000000); // line connecting export wav button to the quick export wav button
-		if(Button(490, 380, false, stoupper(GetQuickExportWAVFilename()).c_str(), 17))
+		DrawBar(490 + 100/2, 300 + 17, 2, 30, 0x000000); // line connecting export wav button to the quick export wav button
+		if(Button(490, 330, false, stoupper(GetQuickExportWAVFilename()).c_str(), 17))
 		{
 			QuickExportWAV();
 		}
