@@ -1368,6 +1368,11 @@ bool ddkCalcFrame()
 		Undo();
 		keydown=true;
 	}
+	else if(input->KeyPressed(SDLK_g))
+	{
+		dragOnLeftClick = !dragOnLeftClick;
+		keydown=true;
+	}
 	else
 		keydown=false;
 
@@ -1381,7 +1386,7 @@ void ddkInit()
 {
 	srand(time(NULL));
 
-	ddkSetMode(640,480, 32, 60, DDK_WINDOW, "sfxr"); // requests window size etc from ddrawkit
+	ddkSetMode(640, 480, 32, 60, DDK_WINDOW, "sfxr"); // requests window size etc from ddrawkit
 
 	if (LoadTGA(font, "/usr/local/share/sfxr/images/font.tga")) {
         	/* Try again in cwd */
