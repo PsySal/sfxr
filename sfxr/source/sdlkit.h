@@ -33,7 +33,7 @@
 typedef Uint32 DWORD;
 typedef Uint16 WORD;
 
-#define DDK_WINDOW 0
+#define DDK_WINDOW 0 // set to true to enable fullscreen; this does not seem to work very well
 
 
 extern Uint32 *ddkscreen32;
