@@ -1373,7 +1373,7 @@ bool ddkCalcFrame()
 
 	DrawScreen();
 
-	SDL_Delay(5);
+	SDL_Delay(1);
 	return true;
 }
 
