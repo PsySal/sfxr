@@ -1349,32 +1349,22 @@ void DrawScreen()
 		vcurbutton=-1;
 }
 
-bool keydown=false;
-
 bool ddkCalcFrame()
 {
 	input->Update(); // (for keyboard input)
 
 	if(input->KeyPressed(SDLK_SPACE) || input->KeyPressed(SDLK_RETURN)) // (keyboard input only for convenience, ok to remove)
 	{
-		if(!keydown)
-		{
-			PlaySample();
-			keydown=true;
-		}
+		PlaySample();
 	}
 	else if(input->KeyPressed(SDLK_z))
 	{
 		Undo();
-		keydown=true;
 	}
 	else if(input->KeyPressed(SDLK_g))
 	{
 		dragOnLeftClick = !dragOnLeftClick;
-		keydown=true;
 	}
-	else
-		keydown=false;
 
 	DrawScreen();
 
