@@ -33,9 +33,6 @@
 typedef Uint32 DWORD;
 typedef Uint16 WORD;
 
-#define DIK_SPACE SDLK_SPACE
-#define DIK_RETURN SDLK_RETURN
-#define DIK_Z SDLK_z
 #define DDK_WINDOW 0
 
 

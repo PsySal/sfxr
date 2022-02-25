@@ -1355,7 +1355,7 @@ bool ddkCalcFrame()
 {
 	input->Update(); // (for keyboard input)
 
-	if(input->KeyPressed(DIK_SPACE) || input->KeyPressed(DIK_RETURN)) // (keyboard input only for convenience, ok to remove)
+	if(input->KeyPressed(SDLK_SPACE) || input->KeyPressed(SDLK_RETURN)) // (keyboard input only for convenience, ok to remove)
 	{
 		if(!keydown)
 		{
@@ -1363,7 +1363,7 @@ bool ddkCalcFrame()
 			keydown=true;
 		}
 	}
-	else if(input->KeyPressed(DIK_Z))
+	else if(input->KeyPressed(SDLK_z))
 	{
 		Undo();
 		keydown=true;
