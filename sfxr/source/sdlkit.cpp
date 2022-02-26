@@ -100,11 +100,19 @@ void ddkUnlock ()
 	}
 }
 
-void ddkSetMode (int width, int height, int bpp, int refreshrate, int fullscreen, const char *title)
+void ddkSetMode (int width, int height, int bpp, int refreshrate, int fullscreen, const char *title, SDL_Surface* icon)
 {
 	VERIFY(0 == SDL_CreateWindowAndRenderer(width, height, fullscreen ? SDL_WINDOW_FULLSCREEN : 0, &sdlwindow, &sdlrenderer));
 	VERIFY(sdlscreen = SDL_CreateRGBSurface(0, width, height, bpp, 0, 0, 0, 0));
-	SDL_SetWindowTitle (sdlwindow, title);
+	SDL_SetWindowTitle(sdlwindow, title);
+	SDL_SetWindowIcon(sdlwindow, icon);
+	/*
+	icon = SDL_LoadBMP("/usr/local/share/sfxr/images/sfxr.bmp");
+	if (!icon)
+		icon = SDL_LoadBMP("images/sfxr.bmp");
+	if (icon)
+		SDL_SetWindowIcon(sdlwindow, icon);
+*/
 }
 
 #include <string.h>
@@ -387,13 +395,7 @@ void sdlquit ()
 
 void sdlinit ()
 {
-	SDL_Surface *icon;
 	VERIFY(!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO));
-	icon = SDL_LoadBMP("/usr/local/share/sfxr/images/sfxr.bmp");
-	if (!icon)
-		icon = SDL_LoadBMP("images/sfxr.bmp");
-	if (icon)
-		SDL_SetWindowIcon(sdlwindow, icon);
 	atexit(sdlquit);
 	keys.clear();
 	ddkInit();

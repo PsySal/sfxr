@@ -21,6 +21,7 @@
 
 */
 
+#include "data_dir.h"
 #include "sdlkit.h"
 #include "tools.h"
 
@@ -1372,33 +1373,35 @@ bool ddkCalcFrame()
 	return true;
 }
 
+int LoadTGAFromDataDir(Spriteset& dest, const std::string& ExeDir, const std::string& Filename) {
+
+	// try immediately adjacent the exe
+	if (!LoadTGA(dest, (ExeDir + "/" + Filename).c_str())) return 0;
+
+	// if sfxr was installed in /usr/local/bin, try in /usr/local/share/sfxr
+	if (!LoadTGA(dest, (ExeDir + "/../share/sfxr/" + Filename).c_str())) return 0;
+
+	// finally, use cwd
+	if (!LoadTGA(dest, Filename.c_str())) return 0;
+
+	std::cerr << "Error: could not open " << Filename << " (exe dir is " << ExeDir << ")" << std::endl;
+
+	return -1;
+}
+
 void ddkInit()
 {
 	srand(time(NULL));
 
-	ddkSetMode(640, 480, 32, 60, DDK_WINDOW, "sfxr"); // requests window size etc from ddrawkit
+	std::string ExeDir = get_exe_parent_dir();
 
-	if (LoadTGA(font, "/usr/local/share/sfxr/images/font.tga")) {
-        	/* Try again in cwd */
-		if (LoadTGA(font, "images/font.tga")) {
-			fprintf(stderr,
-				"Error could not open /usr/local/share/sfxr/images/font.tga"
-				" nor images/font.tga\n");
-			exit(1);
-		}
-	}
-
-	if (LoadTGA(ld48, "/usr/local/share/sfxr/images/ld48.tga")) {
-        	/* Try again in cwd */
-		if (LoadTGA(ld48, "images/ld48.tga")) {
-			fprintf(stderr,
-				"Error could not open /usr/local/share/sfxr/images/ld48.tga"
-				" nor images/ld48.tga\n");
-			exit(1);
-		}
-	}
-
+	Spriteset icon;
+	if (LoadTGAFromDataDir(icon, ExeDir, "images/sfxr.tga")) exit(1);
+	if (LoadTGAFromDataDir(font, ExeDir, "images/font.tga")) exit(1);
+	if (LoadTGAFromDataDir(ld48, ExeDir, "images/ld48.tga")) exit(1);
 	ld48.width=ld48.pitch;
+
+	ddkSetMode(640, 480, 32, 60, DDK_WINDOW, "sfxr", SDL_CreateRGBSurfaceFrom(icon.data, icon.width, icon.height, 24, 4, 0, 0, 0, 0));
 
 	input=new DPInput;
 
